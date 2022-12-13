@@ -1,11 +1,37 @@
+
 let sqlite3 = require('sqlite3').verbose();
 let bodyParser = require('body-parser');
 const { count } = require('console');
 const express= require('express');
 const { list } = require('tar');
+
+
 const app = express();
 
-const port = 2000 ;
+app.use(function (req, res, next) {
+
+    // Website you wish to allow to connect
+    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
+
+    // Request methods you wish to allow
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+
+    // Request headers you wish to allow
+    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+
+    // Set to true if you need the website to include cookies in the requests sent
+    // to the API (e.g. in case you use sessions)
+    res.setHeader('Access-Control-Allow-Credentials', true);
+
+    // Pass to next layer of middleware
+    next();
+});
+
+const router = express.Router();
+const cors = require("cors");
+router.use(cors());
+
+const port = 8000 ;
 
 app.listen(port,()=>{
     console.log('listening on port '+ port);
@@ -24,8 +50,7 @@ async function main()
 
 
 app.get('/',async (req,res)=>{
-
-    const listt = await getall();  
+    const listt = await getall();
     res.json(listt)
 })
 
@@ -58,7 +83,7 @@ function getall() {
                     title : row.title,
                     year : row.year,
                     runtime: row.runtime,
-                    genres : bodyParser.json(row.genres),
+                    genres : row.genres,
                     director : row.director,
                     actors : row.actors,
                     plot : row.plot,
