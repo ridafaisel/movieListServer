@@ -54,6 +54,13 @@ app.get('/',async (req,res)=>{
     res.json(listt)
 })
 
+
+app.get('/movies/',async (req,res)=>{
+    const listt = await getMovies();
+    res.json(listt)
+})
+
+
 app.get('/movies/:id',async (req,res)=>{
     const listt = await getMovie(req.params.id);
     res.json(listt)
@@ -120,6 +127,36 @@ function getMovie(id) {
         });
         
         
+        
+    });
+
+}
+
+
+function getMovies() {
+    return new Promise((resolve,reject)=>{
+        let movieList = {
+            movies:[]}; 
+        db.all(`SELECT * FROM movie`,[],(err,rows)=>{
+         if(err)
+         reject('not fulfilled because '+ err.message)
+            rows.forEach(row=>{
+
+                movieList.movies.push({
+                    id : row.id,
+                    title : row.title,
+                    year : row.year,
+                    runtime: row.runtime,
+                    genres : row.genres,
+                    director : row.director,
+                    actors : row.actors,
+                    plot : row.plot,
+                    posterUrl : row.posterUrl
+                })
+
+            });
+            resolve(movieList);
+        });
         
     });
 }
