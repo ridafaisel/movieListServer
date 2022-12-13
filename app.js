@@ -54,6 +54,12 @@ app.get('/',async (req,res)=>{
     res.json(listt)
 })
 
+app.get('/movies/:id',async (req,res)=>{
+    const listt = await getMovie(req.params.id);
+    res.json(listt)
+})
+
+
 
 function getall() {
     return new Promise((resolve,reject)=>{
@@ -93,6 +99,27 @@ function getall() {
             });
             resolve(movieList);
         });
+        
+    });
+}
+
+
+function getMovie(id) {
+    return new Promise((resolve,reject)=>{
+         sql= `SELECT * FROM Movie WHERE movie.id = ${id}; `
+        db.all(sql,[],(err,rows)=>{
+         if(err)
+         reject('not fulfilled because '+ err.message)
+          
+         console.log(rows);
+
+            
+            setTimeout(()=>{
+        resolve(rows)
+            },1000)
+        });
+        
+        
         
     });
 }
